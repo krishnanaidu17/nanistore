@@ -69,10 +69,25 @@ function displayCart(){
 
        cartItems.innerHTML += `
     <div class="col-4">
+
         <img src="${item.image}">
         <h4>${item.name}</h4>
         <p>₹${item.price}</p>
-        <p>Qty: ${item.qty}</p>
+
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
+            
+            <button onclick="changeQty('${item.name}', -1)">-</button>
+
+            <span>Qty: ${item.qty}</span>
+
+            <button onclick="changeQty('${item.name}', 1)">+</button>
+
+        </div>
+
+        <button onclick="removeItem('${item.name}')" style="margin-top:10px;background:red;color:white;border:none;padding:5px 10px;cursor:pointer;">
+            Remove
+        </button>
+
     </div>
 `;
     });
@@ -89,9 +104,59 @@ function payNow() {
         return;
     }
 
-    alert("Payment successful 🎉");
+    document.getElementById("uploadSection").style.display = "block";
+}
+function changeQty(name, change) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    let item = cart.find(i => i.name === name);
+
+    if (!item) return;
+
+    item.qty += change;
+
+    if (item.qty <= 0) {
+        cart = cart.filter(i => i.name !== name);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCart();
+}
+function removeItem(name) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart = cart.filter(i => i.name !== name);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCart();
+}
+function submitOrder() {
+    let fileInput = document.getElementById("paymentFile");
+
+    if (fileInput.files.length === 0) {
+        alert("Please upload a file first");
+        return;
+    }
+
+    // Save order
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    let newOrder = {
+        id: Date.now(),
+        items: cart,
+        paymentProof: fileInput.files[0].name,
+        date: new Date().toLocaleString(),
+        status: "Order Placed"
+    };
+
+    orders.push(newOrder);
+    localStorage.setItem("orders", JSON.stringify(orders));
 
     localStorage.removeItem("cart");
 
-    window.location.reload();
+    alert("Order placed successfully 🎉");
+
+    window.location.href = "success.html";
 }
