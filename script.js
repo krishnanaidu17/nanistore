@@ -134,7 +134,7 @@ function submitOrder() {
     let fileInput = document.getElementById("paymentFile");
 
     if (fileInput.files.length === 0) {
-        alert("Please upload a file first");
+        alert("Please upload a screenshot first");
         return;
     }
 
@@ -159,4 +159,11 @@ function submitOrder() {
     alert("Order placed successfully 🎉");
 
     window.location.href = "success.html";
+}
+const payBtn = document.getElementById("payBtn");
+
+if(payBtn){
+    payBtn.addEventListener("click", function(){
+        document.getElementById("paymentSection").style.display = "block";
+    });
 }
