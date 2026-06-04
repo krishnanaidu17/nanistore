@@ -167,3 +167,9 @@ if(payBtn){
         document.getElementById("paymentSection").style.display = "block";
     });
 }
+function phonepay() {
+    let amount = 400;
+
+    // Example PhonePe payment page URL
+    window.location.href = "https://www.phonepe.com/";
+}
